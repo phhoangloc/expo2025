@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: "image.buoncf.jp",
+        port: "",
+        pathname: "/**"
+      },
+    ],
+  },
+  env: {
+    HOMEPAGE_URL: "http://localhost:3000/",
+    ftp_url: "https://image.buoncf.jp/expo/",
+  }
 };
 
 export default nextConfig;
