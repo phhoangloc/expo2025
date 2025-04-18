@@ -66,23 +66,18 @@ const image = async (
                         password: "031090Ph@",
                         port: 22
                     });
-                    const pic = await prisma.image.findFirst({ where: { name: moment(Date()).format("YYYYMMDD_hhmmss") + uploadFile[0].originalFilename } })
-                    if (pic) {
-                        result.success = false
-                        result.message = "この写真はすでに存在します"
-                        res.json(result)
+                    const fileName = moment(Date()).format("YYYYMMDD_hhmmss") + uploadFile[0].originalFilename
 
-                    } else {
-                        await client.put(uploadFile[0].filepath, `/home/locpham/public_html/expo/${moment(Date()).format("YYYYMMDD_hhmmss") + uploadFile[0].originalFilename}`);
-                        client.end()
-                        await prisma.image.create({ data: { hostId: id, name: moment(Date()).format("YYYYMMDD_hhmmss") + uploadFile[0].originalFilename } })
+                    await client.put(uploadFile[0].filepath, `/home/locpham/public_html/expo/${fileName}`);
+                    client.end()
+                    await prisma.image.create({ data: { hostId: id, name: fileName } })
 
-                        result.success = true
-                        result.message = "写真をアップロードしました"
-                        result.data = moment(Date()).format("YYYYMMDD_hhmmss") + uploadFile[0].originalFilename
-                        res.json(result)
+                    result.success = true
+                    result.message = "写真をアップロードしました"
+                    result.data = fileName
+                    res.json(result)
 
-                    }
+
                 }
             })
             break
