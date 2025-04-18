@@ -66,7 +66,7 @@ const image = async (
                         password: "031090Ph@",
                         port: 22
                     });
-                    const fileName = moment(Date()).format("YYYYMMDD_hhmmss") + uploadFile[0].originalFilename
+                    const fileName = moment(Date()).format("YYYYMMDD_hhmm") + uploadFile[0].originalFilename
 
                     await client.put(uploadFile[0].filepath, `/home/locpham/public_html/expo/${fileName}`);
                     client.end()
