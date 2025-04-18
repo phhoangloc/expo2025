@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
     ],
   },
   env: {
-    HOMEPAGE_URL: "http://localhost:3000/",
+    HOMEPAGE_URL: "https://expo2025-seven.vercel.app/",
+    HOMEPAGE_URL_: "http://localhost:3000/",
     ftp_url: "https://image.buoncf.jp/expo/",
   }
 };
