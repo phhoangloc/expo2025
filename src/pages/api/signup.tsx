@@ -4,7 +4,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 // import connectMongoDB from '@/connect/database/mogoseDB';
 import nodemailer from 'nodemailer';
-import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 export const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -25,9 +24,6 @@ const createUser = async (
 
     if (req.method === 'POST') {
         const body = req.body;
-        const salt = bcrypt.genSaltSync(10);
-        const mahoa_password = req.body.password && bcrypt.hashSync(req.body.password.toString(), salt);
-        body.password = mahoa_password
         const result: {
             success: boolean,
             message?: string,

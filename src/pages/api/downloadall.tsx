@@ -11,7 +11,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     switch (method) {
         case "POST":
-            console.log(body)
             for (const fileName of body) {
                 // const filePath = path.join(process.cwd(), "public", "files", fileName);
                 const response = await fetch(fileName);

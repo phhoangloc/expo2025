@@ -28,9 +28,9 @@ model User {
   password  String 
   email     String    @unique
   active    Boolean   @default(false)
-  position  String    @default("user")
+  position  String    @default("viewer")
   image     Image[]
-  comment   Comment[]
+  post      Post[]
 }
 
 model Image {
@@ -40,10 +40,10 @@ model Image {
   hostId    Int
   name      String      @default("newpic")  
   createdAt DateTime    @default(now())
-  comment   Comment[]
+  post      Post[]
 }
 
-model Comment {
+model Post {
   id        Int         @id @default(autoincrement())
   archive   String      @default("comment")
   host      User        @relation(fields: [hostId], references: [id])

@@ -17,7 +17,7 @@ export type BodyTypeWithPosition = {
 }
 export const ApiCheckLogin = async () => {
     try {
-        const result = await axios.get("api/user", {
+        const result = await axios.get("/api/user", {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': localStorage && localStorage.token
@@ -28,7 +28,7 @@ export const ApiCheckLogin = async () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         try {
-            const result = await axios.get("api/admin", {
+            const result = await axios.get("/api/admin", {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': localStorage && localStorage.token
@@ -46,7 +46,7 @@ export const ApiCheckLogin = async () => {
 
 export const ApiItemUser = async ({ position, archive, archivePlus, hostId, search, id, slug, sort, skip, limit }: BodyTypeWithPosition) => {
     try {
-        const result = await axios.get("api/" + position +
+        const result = await axios.get("/api/" + position +
             "/" + archive +
             "?archive=" + `${archivePlus ? archivePlus : archive}` +
             "&hostId=" + `${hostId ? hostId : ""}` +
@@ -73,8 +73,9 @@ export const ApiItemUser = async ({ position, archive, archivePlus, hostId, sear
     }
 }
 
-export const ApiCreateItem = async ({ position, archive }: BodyTypeWithPosition, body: unknown) => {
-    const result = await axios.post("api/" +
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const ApiCreateItem = async ({ position, archive }: BodyTypeWithPosition, body: any) => {
+    const result = await axios.post("/api/" +
         position +
         "/" + archive,
         body,
@@ -87,8 +88,9 @@ export const ApiCreateItem = async ({ position, archive }: BodyTypeWithPosition,
         })
     return (result.data)
 }
-export const ApiUpdateItem = async ({ position, archive, id }: BodyTypeWithPosition, body: unknown) => {
-    const result = await axios.put("api/" +
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const ApiUpdateItem = async ({ position, archive, id }: BodyTypeWithPosition, body: any) => {
+    const result = await axios.put("/api/" +
         position +
         "/" + archive +
         "?id=" + id,
@@ -103,7 +105,7 @@ export const ApiUpdateItem = async ({ position, archive, id }: BodyTypeWithPosit
     return (result.data)
 }
 export const ApiDeleteItem = async ({ position, archive, id }: BodyTypeWithPosition) => {
-    const result = await axios.delete("api/" +
+    const result = await axios.delete("/api/" +
         position +
         "/" + archive +
         "?id=" + id,
@@ -121,7 +123,7 @@ export const ApiUploadFile = async ({ position, archive, file }: BodyTypeWithPos
     const formData = new FormData()
     if (file) {
         formData.append("file", file)
-        const fileUpload = await axios.post("api/" + position + "/" + archive, formData, {
+        const fileUpload = await axios.post("/api/" + position + "/" + archive, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': localStorage.token,

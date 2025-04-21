@@ -32,30 +32,60 @@ const image = async (
     const token = authorization && authorization.split(" ")[1]
     const jwtResult = token && await jwt.verify(token, 'secretToken')
     const id = typeof jwtResult === 'object' && 'id' in jwtResult ? jwtResult.id : 0
-    // console.log(trydata)
-    switch (method) {
-        case "GET":
-            const pics = await prisma.image.findMany({ where: { hostId: id } })
+    if (id) {
+        switch (method) {
+            case "GET":
+                const pics = await prisma.image.findMany({ where: { hostId: id }, include: { host: { select: { username: true } } }, orderBy: { createdAt: "desc" } })
 
-            if (pics.length) {
-                result.success = true
-                result.data = pics
-                res.json(result)
-            } else {
-                result.success = false
-                result.data = []
-                res.json(result)
-            }
-            break
-        case "POST":
-            // const form = new formidable.IncomingForm();
-            const form = new IncomingForm();
-
-            await form.parse(req, async (err: Error, fields: any, files: any) => {
-                if (err) {
-                    throw err
+                if (pics.length) {
+                    result.success = true
+                    result.data = pics
+                    res.json(result)
                 } else {
-                    const uploadFile = files && files.file;
+                    result.success = false
+                    result.data = []
+                    res.json(result)
+                }
+                break
+            case "POST":
+                // const form = new formidable.IncomingForm();
+                const form = new IncomingForm();
+
+                await form.parse(req, async (err: Error, fields: any, files: any) => {
+                    if (err) {
+                        throw err
+                    } else {
+                        const uploadFile = files && files.file;
+
+                        const client = new Client();
+                        // client.ftp.timeout = 60 * 1000
+
+                        await client.connect({
+                            host: "buoncf.jp",
+                            username: "locpham",
+                            password: "031090Ph@",
+                            port: 22
+                        });
+                        const fileName = moment(Date()).format("YYYYMMDD") + uploadFile[0].originalFilename
+
+
+                        await client.put(uploadFile[0].filepath, `/home/locpham/public_html/expo/${fileName}`);
+                        client.end()
+                        const img = await prisma.image.create({ data: { hostId: id, name: fileName } })
+                        console.log(img)
+                        result.success = true
+                        result.message = "写真をアップロードしました"
+                        result.data = img
+                        res.json(result)
+
+
+                    }
+                })
+                break
+            case "DELETE":
+                const pic = await prisma.image.findUnique({ where: { id: Number(query.id) } })
+                if (id === pic?.hostId) {
+
 
                     const client = new Client();
                     // client.ftp.timeout = 60 * 1000
@@ -66,52 +96,30 @@ const image = async (
                         password: "031090Ph@",
                         port: 22
                     });
-                    const fileName = moment(Date()).format("YYYYMMDD_hhmm") + uploadFile[0].originalFilename
 
-                    await client.put(uploadFile[0].filepath, `/home/locpham/public_html/expo/${fileName}`);
-                    client.end()
-                    await prisma.image.create({ data: { hostId: id, name: fileName } })
-
-                    result.success = true
-                    result.message = "写真をアップロードしました"
-                    result.data = fileName
-                    res.json(result)
-
-
-                }
-            })
-            break
-        case "DELETE":
-            const pic = await prisma.image.findUnique({ where: { id: Number(query.id) } })
-            if (id === pic?.hostId) {
-
-
-                const client = new Client();
-                // client.ftp.timeout = 60 * 1000
-
-                await client.connect({
-                    host: "buoncf.jp",
-                    username: "locpham",
-                    password: "031090Ph@",
-                    port: 22
-                });
-
-                const result = await client.delete("/home/locpham/public_html/expo/" + pic?.name);
-                if (result) {
-                    await prisma.image.delete({ where: { id: Number(query.id) } })
-                    res.json({ success: true })
+                    const result = await client.delete("/home/locpham/public_html/expo/" + pic?.name);
+                    if (result) {
+                        await prisma.image.delete({ where: { id: Number(query.id) } })
+                        res.json({ success: true })
+                    } else {
+                        res.json({ success: false })
+                    }
+                    break;
                 } else {
-                    res.json({ success: false })
-                }
-                break;
-            } else {
-                res.json({
-                    msg: "この画像はあなたの画像ではありません。",
-                    success: false
-                })
+                    res.json({
+                        msg: "この画像はあなたの画像ではありません。",
+                        success: false
+                    })
 
-            }
+                }
+        }
     }
+    else {
+        result.success = false
+        result.message = "まだログインしていません"
+        res.json(result)
+    }
+
 }
 
 

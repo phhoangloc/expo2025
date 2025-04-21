@@ -4,11 +4,14 @@ import React, { useEffect, useState } from 'react'
 import { UserType } from '@/redux/reducer/UserReduce'
 import store from '@/redux/store'
 import LoginCard from '@/tool/card/loginCard'
-import { ImageType } from '../page'
+
 import { ApiItemUser } from '@/api/user'
 import Image from 'next/image'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
+type ImageType = {
+    name: string
+}
 const Page = () => {
     const [currentUser, setCurrentUser] = useState<UserType>(store.getState().user)
     const update = () => {
@@ -70,6 +73,7 @@ const Page = () => {
         document.body.removeChild(link);
     };
 
+    console.log(currentUser)
     return (
         currentUser.position !== "admin" ?
 

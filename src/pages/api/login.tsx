@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 // import { userModel } from '@/model/user.model'
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 
 
 const login = async (
@@ -25,7 +24,6 @@ const login = async (
         const username = body.username
         const password = body.password
 
-        console.log(body)
         const usenameiExsited = await prisma.user.findUnique({ where: { username: username } })
         if (usenameiExsited == null) {
 
@@ -47,7 +45,7 @@ const login = async (
                 res.json(result)
 
             } else {
-                const isPasswordValid = await bcrypt.compare(password, usenameiExsited.password);
+                const isPasswordValid = password === usenameiExsited.password;
                 if (isPasswordValid) {
 
                     const payload = { id: usenameiExsited.id }

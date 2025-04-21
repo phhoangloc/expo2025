@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { NextApiRequest, NextApiResponse } from 'next'
-// import connectMongoDB from '@/connect/database/mogoseDB'
-// import { userModel } from '@/model/user.model'
 
-import { verify } from 'jsonwebtoken';
+import type { NextApiRequest, NextApiResponse } from 'next'
+
+import jwt from 'jsonwebtoken';
+
 import { PrismaClient } from '@prisma/client';
 
 export default async function handler(
@@ -13,27 +11,25 @@ export default async function handler(
 ) {
 
     const prisma = new PrismaClient();
-    let id
-    const result: {
-        success: boolean,
-        message?: string,
-        data?: any,
-    } = { success: false };
+
     const authorization = req.headers['authorization']
     const token = authorization && authorization.split(" ")[1]
 
-    if (token) {
+    const jwtResult = token && await jwt.verify(token, 'secretToken')
+    const id = typeof jwtResult === 'object' && 'id' in jwtResult ? jwtResult.id : 0
+
+    if (id) {
         try {
-            const result = verify(token, "secretToken")
-            if (typeof result === 'object' && 'id' in result) {
-                const id: number = result.id
-                const user = await prisma.admin.findUnique({
+            const user = await prisma.user.findFirst({ where: { id: id } })
+            if (user?.position === "admin") {
+                const user = await prisma.user.findUnique({
                     where: {
                         id: id
                     },
                     select: {
                         id: true,
                         username: true,
+                        email: true,
                         position: true,
                     }
                 })
@@ -44,58 +40,24 @@ export default async function handler(
             } else {
                 res.json({
                     success: false,
-                    msg: "you have problem in your JWT",
-                    id: undefined
+                    msg: "許可がありません"
                 })
             }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             res.json({
                 success: false,
-                msg: "your token is expired",
+                msg: "有効期限が切れた",
                 id: undefined
             })
 
         }
-        // await verify(token, 'secretToken', async (err: Error, data: any) => {
-        //     if (err) {
-        //         if (err.name === 'TokenExpiredError') {
-        //             result.message = ''
-        //             res.json(result);
-        //         } else {
-        //             res.json(result);
-        //         }
-        //     } else {
-        //         id = data.id
-        //         const user = await prisma.user.findUnique({
-        //             where: {
-        //                 id: id
-        //             },
-        //             select: {
-        //                 id: true,
-        //                 username: true,
-        //                 email: true,
-        //                 position: true,
-        //                 pic: {
-        //                     select: {
-        //                         id: true,
-        //                         name: true,
-        //                     },
-        //                 }
-        //             }
-        //         })
-        //         if (user?.id) {
-        //             result.success = true
-        //             result.data = user
-        //             res.json(result)
-        //         } else {
-        //             result.success = false
-        //             result.data = []
-        //             res.json(result)
-        //         }
 
-        //     }
-        // })
     } else {
-        res.send(result)
+        res.json({
+            success: false,
+            msg: "まだログインしていません",
+            id: undefined
+        })
     }
 }
