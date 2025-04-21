@@ -5,6 +5,7 @@ import { setUser } from '../reducer/UserReduce'
 // import { UserAuthen } from '@/api/UserAuthen'
 // import "../../style/theme.css"
 import { ApiCheckLogin } from '@/api/user'
+import Image from 'next/image'
 // import NoticeModal from '@/component/modal/notice.modal'
 // import ImageModal from '@/component/modal/imageModal'
 // import NoUser from '@/api/noUser'
@@ -28,7 +29,7 @@ const Provider = ({ children }: Props) => {
         update()
     })
 
-    // const [loading, setLoading] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(true)
     const checkLogin = async () => {
         // NoUser.getItem({ genre: "category" })
         // NoUser.getItem({ genre: "pic" })
@@ -37,14 +38,14 @@ const Provider = ({ children }: Props) => {
         // console.log(result)
         if (result.success) {
             store.dispatch(setUser(result.data))
-            // setTimeout(() => {
-            //     setLoading(false)
-            // }, 3000)
+            setTimeout(() => {
+                setLoading(false)
+            }, 3000)
         } else {
             // store.dispatch(setUser({}))
-            // setTimeout(() => {
-            //     setLoading(false)
-            // }, 3000)
+            setTimeout(() => {
+                setLoading(false)
+            }, 3000)
         }
     }
 
@@ -53,13 +54,15 @@ const Provider = ({ children }: Props) => {
     }, [currentRefresh])
 
     return (
-        // loading ? <div style={{ width: "100vw", height: "100vh" }}><Loading /></div> :
-        <>
-            {/* <NoticeModal />
+        loading ? <div className='w-full h-screen flex flex-col justify-center text-center'>
+            <Image src={"/image/loading.jpg"} width={500} height={500} alt='loading' className='m-auto' />
+        </div> :
+            <>
+                {/* <NoticeModal />
                 <ImageModal />
                 <DecideModal /> */}
-            {children}
-        </>
+                {children}
+            </>
     )
 }
 
