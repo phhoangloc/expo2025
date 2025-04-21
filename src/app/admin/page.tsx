@@ -3,8 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import { UserType } from '@/redux/reducer/UserReduce'
 import store from '@/redux/store'
-import LoginCard from '@/tool/card/loginCard'
-
 import { ApiItemUser } from '@/api/user'
 import Image from 'next/image'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -73,59 +71,54 @@ const Page = () => {
         document.body.removeChild(link);
     };
 
-    console.log(currentUser)
     return (
-        currentUser.position !== "admin" ?
+        <div className="w-full  bg-slate-200">
+            <div className='flex flex-col gap-1 max-w-2xl m-auto min-h-screen p-1'>
+                <div className='flex ga-1 bg-white w-full h-12 justify-between'>
+                    <div className="h-12 aspect-square flex flex-col justify-center">
+                        <input
+                            type="checkbox"
+                            className='w-4 h-4 m-auto'
+                            checked={_isSelectAll}
+                            onChange={() => {
+                                set_selected(_isSelectAll ? [] : _images.map(img => process.env.ftp_url + img.name))
+                                set_isSelectAll(!_isSelectAll)
+                            }}
+                        />
+                    </div>
+                    {_selected.length > 1 ? <div className='flex flex-col justify-center'>
+                        <FileDownloadIcon className='!w-12 !h-12 p-3 opacity-50 text-main hover:opacity-100 cursor-pointer' onClick={() => downloadAsZip()} />
+                    </div> : null}
+                </div>
+                {_images.map((img, index) =>
+                    <div key={index} className='flex ga-1 bg-white w-full'>
 
-            <div className='w-full h-screen flex flex-col justify-center bg-slate-200'><LoginCard /></div>
-            :
-            <div className="w-full  bg-slate-200">
-                <div className='flex flex-col gap-1 max-w-2xl m-auto min-h-screen p-1'>
-                    <div className='flex ga-1 bg-white w-full h-12 justify-between'>
                         <div className="h-12 aspect-square flex flex-col justify-center">
                             <input
+                                key={_key + 10}
                                 type="checkbox"
                                 className='w-4 h-4 m-auto'
-                                checked={_isSelectAll}
+                                checked={_selected.includes(process.env.ftp_url + img.name)}
                                 onChange={() => {
-                                    set_selected(_isSelectAll ? [] : _images.map(img => process.env.ftp_url + img.name))
-                                    set_isSelectAll(!_isSelectAll)
+                                    set_index(index); set_url(process.env.ftp_url + img.name);
                                 }}
                             />
                         </div>
-                        {_selected.length > 1 ? <div className='flex flex-col justify-center'>
-                            <FileDownloadIcon className='!w-12 !h-12 p-3 opacity-50 text-main hover:opacity-100 cursor-pointer' onClick={() => downloadAsZip()} />
-                        </div> : null}
-                    </div>
-                    {_images.map((img, index) =>
-                        <div key={index} className='flex ga-1 bg-white w-full'>
+                        <div className='h-11 aspect-square relative my-auto'>
+                            <Image src={process.env.ftp_url + img.name} fill className='object-contain' alt='image' />
+                        </div>
 
-                            <div className="h-12 aspect-square flex flex-col justify-center">
-                                <input
-                                    key={_key + 10}
-                                    type="checkbox"
-                                    className='w-4 h-4 m-auto'
-                                    checked={_selected.includes(process.env.ftp_url + img.name)}
-                                    onChange={() => {
-                                        set_index(index); set_url(process.env.ftp_url + img.name);
-                                    }}
-                                />
+                        <div className='flex justify-between w-full pl-2'>
+                            <div className='flex flex-col justify-center text-sm opacity-75'>
+                                {img.name}
                             </div>
-                            <div className='h-11 aspect-square relative my-auto'>
-                                <Image src={process.env.ftp_url + img.name} fill className='object-contain' alt='image' />
+                            <div className='flex flex-col justify-center'>
+                                <a href={"/api/download?filename=" + img.name} download><FileDownloadIcon className='!w-12 !h-12 p-3 opacity-50 text-main hover:opacity-100 cursor-pointer' /></a>
                             </div>
-
-                            <div className='flex justify-between w-full pl-2'>
-                                <div className='flex flex-col justify-center text-sm opacity-75'>
-                                    {img.name}
-                                </div>
-                                <div className='flex flex-col justify-center'>
-                                    <a href={"/api/download?filename=" + img.name} download><FileDownloadIcon className='!w-12 !h-12 p-3 opacity-50 text-main hover:opacity-100 cursor-pointer' /></a>
-                                </div>
-                            </div>
-                        </div>)}
-                </div>
+                        </div>
+                    </div>)}
             </div>
+        </div>
     )
 }
 

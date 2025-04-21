@@ -27,7 +27,7 @@ model User {
   username  String    @unique
   password  String 
   email     String    @unique
-  active    Boolean   @default(false)
+  active    Boolean   @default(true)
   position  String    @default("viewer")
   image     Image[]
   post      Post[]

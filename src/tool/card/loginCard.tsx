@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import { Input } from '../input/input';
-// import Link from 'next/link';
 import { Button } from '..//button/button';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
@@ -10,13 +9,11 @@ import { useRouter } from 'next/navigation';
 import { setRefresh } from '@/redux/reducer/RefreshReduce';
 import store from '@/redux/store';
 
-// import { ApiLogin } from '@/api/client';
-// import store from '@/redux/store';
-// import { setRefresh } from '@/redux/reducer/RefreshReduce';
-// import { setNotice } from '@/redux/reducer/noticeReducer';
+type Props = { archive?: string }
 
+const LoginCard = ({ archive }: Props) => {
 
-const LoginCard = () => {
+    console.log(archive)
 
     const [_username, set_username] = useState<string>("")
     const [_password, set_password] = useState<string>("")
@@ -29,7 +26,12 @@ const LoginCard = () => {
         if (result.success) {
             localStorage.token = "bearer " + result.result
             store.dispatch(setRefresh())
-            toPage.push("/")
+            if (archive) {
+                toPage.push("/" + archive)
+            } else {
+                toPage.push("/")
+            }
+
         }
     }
 
@@ -46,9 +48,6 @@ const LoginCard = () => {
                     <VisibilityOffIcon className='w-6 h-6 my-auto mx-1 cursor-pointer hover:text-colormain' onClick={() => setShowPassword(true)} />} />
             <div className="h-12">
             </div>
-            {/* <div className="h-12 flex flex-col justify-center">
-                <Link className='opacity-50 hover:opacity-100 hover:text-colormain' href={"signup"}>登録</Link>
-            </div> */}
             <div className="h-12">
             </div>
             <Button name="ログイン" onClick={() => login({ username: _username, password: _password })} sx='!w-2/3 m-auto bg-main' />

@@ -1,7 +1,1 @@
-GET http://localhost:3000/api/admin/post
-Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ0OTQ3MzA2LCJleHAiOjE3NDUwMzM3MDZ9.zMrJNloDW6vNVu9rzWKqLObWEET1KmvcADMczDhYJ0U "
-Content-Type: application/json
-
-{
-    "username":"hello"
-}
+GET https://expo2025-seven.vercel.app/api

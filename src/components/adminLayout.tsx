@@ -22,7 +22,7 @@ const AdminLayout = ({ children }: Props) => {
         currentUser.position === "admin" ?
             <div>{children}</div> :
             <div className='w-full h-screen flex flex-col justify-center bg-slate-200'>
-                <LoginCard />
+                <LoginCard archive='admin' />
             </div>
     )
 }
