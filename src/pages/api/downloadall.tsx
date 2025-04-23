@@ -12,15 +12,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     switch (method) {
         case "POST":
             for (const fileName of body) {
-                // const filePath = path.join(process.cwd(), "public", "files", fileName);
-                const response = await fetch(fileName);
+                const comment = fileName.text.replace(/<[^>]*>/g, '')
+                const response = await fetch(fileName.url);
                 const blob = await response.blob();
                 const buffer = await blob.arrayBuffer();
                 const fileData = Buffer.from(buffer)
-                const urlPath = new URL(fileName).pathname;
+                const urlPath = new URL(fileName.url).pathname;
                 const name = urlPath.substring(urlPath.lastIndexOf("/") + 1);
-                zip.file(name, fileData);
-
+                const folder = zip.folder(name.split(".")[0])
+                folder?.file(name, fileData);
+                folder?.file('comment.txt', comment)
             }
 
             const zipContent = await zip.generateAsync({ type: "nodebuffer" });
