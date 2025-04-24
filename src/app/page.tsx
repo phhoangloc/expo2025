@@ -133,34 +133,47 @@ export default function Home() {
   return (
     currentUser.id ?
       <Suspense>
-        <div className="bg-slate-200 flex flex-col gap-4 p-4 min-h-screen ">
-          <Modal set_refresh={() => set_refresh(n => n + 1)} />
+        {_posts.length ?
+          <div className="bg-slate-200 flex flex-col gap-4 p-4 min-h-screen ">
+            <Modal set_refresh={() => set_refresh(n => n + 1)} />
 
-          <div className="w-full max-w-md flex gap-2 m-auto">
+            <div className="w-full max-w-md flex gap-2 m-auto">
 
-            <div className="w-12 h-max bg-white sticky top-4 rounded z-1">
-              {currentUser.position === "viewer" ? null : <AddIcon className="!w-12 !h-12 p-2 text-main cursor-pointer" onClick={() => toPage.push("?post=news")} />}
-              <div className="w-full h-[2px] bg-slate-200"></div>
-              <IconDivider icon={<PersonIcon className="!w-full !h-full  text-main cursor-pointer" />} data={[{ name: "ログアウト", func: () => { localStorage.clear(); store.dispatch(setRefresh()); window.location.reload() } }]} />
-            </div>
-            <div className="w-full h-max flex flex-col gap-4">
-              {
-                _posts.map((post, index) =>
-                  <div className="w-full  m-auto bg-white min-h-92 shadow rounded-md flex flex-col justify-between overflow-hidden " key={index}>
-                    <div className="w-full aspect-[3/2] relative border-b border-slate-200 ">
-                      <Image src={process.env.ftp_url + post.image.name} fill alt="image" className="object-contain" />
+              <div className="w-12 h-max bg-white sticky top-4 rounded z-1">
+                {currentUser.position === "viewer" ? null : <AddIcon className="!w-12 !h-12 p-2 text-main cursor-pointer" onClick={() => toPage.push("?post=news")} />}
+                <div className="w-full h-[2px] bg-slate-200"></div>
+                <IconDivider icon={<PersonIcon className="!w-full !h-full  text-main cursor-pointer" />} data={[{ name: "ログアウト", func: () => { localStorage.clear(); store.dispatch(setRefresh()); window.location.reload() } }]} />
+              </div>
+              <div className="w-full h-max flex flex-col gap-4">
+                {
+                  _posts.map((post, index) =>
+                    <div className="w-full  m-auto bg-white min-h-92 shadow rounded-md flex flex-col justify-between overflow-hidden " key={index}>
+                      <div className="w-full aspect-[3/2] relative border-b border-slate-200 ">
+                        <Image src={process.env.ftp_url + post.image.name} fill alt="image" className="object-contain" />
+                      </div>
+                      <div className="p-2">
+                        <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
+                        <div>{post.host.username}</div>
+                      </div>
+                      <div className="h-6"></div>
                     </div>
-                    <div className="p-2">
-                      <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
-                      <div>{post.host.username}</div>
-                    </div>
-                    <div className="h-6"></div>
-                  </div>
-                )
-              }
+                  )
+                }
+              </div>
             </div>
           </div>
-        </div>
+          : <div className='w-full h-screen flex flex-col justify-center text-center'>
+            <div className='w-full max-w-sm text-left m-auto'>
+              <div className='font-bold text-lg mb-2 '>大阪ウィーク～秋～</div>
+              <div className='font-bold text-xl'>「OSAKAから地域共生の未来をつくる」プロジェクト</div>
+              <div className="h-6"></div>
+              <div className=' text-2xl font-bold text-sky-700'>大阪府民生委員・児童委員の皆さんでつくる作品画像<br></br>投稿サイト</div>
+
+              <div className='absolute bottom-0 left-0 w-full'>
+                <Image src={"/image/logo.png"} width={500} height={500} className='w-72 m-auto' alt='logo' />
+              </div>
+            </div>
+          </div>}
       </Suspense>
       :
       <div className="bg-slate-200 flex flex-col gap-4 p-4 h-screen">

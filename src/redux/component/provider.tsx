@@ -29,11 +29,11 @@ const Provider = ({ children }: Props) => {
             store.dispatch(setUser(result.data))
             setTimeout(() => {
                 setLoading(false)
-            }, 3000)
+            }, 5000)
         } else {
             setTimeout(() => {
                 setLoading(false)
-            }, 3000)
+            }, 5000)
         }
     }
 
