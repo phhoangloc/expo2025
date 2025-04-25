@@ -29,6 +29,7 @@ const Page = () => {
     })
 
     const [_users, set_users] = useState<useTypeInPage[]>([])
+    const [_refresh, set_refresh] = useState<number>(0)
     const getImage = async (position: string, archive: string) => {
         const result = await ApiItemUser({ position, archive })
 
@@ -39,8 +40,8 @@ const Page = () => {
 
     useEffect(() => {
         getImage(currentUser.position, "user")
-    }, [currentUser.position])
-    console.log(_users)
+    }, [currentUser.position, _refresh])
+
     const useSearch = useSearchParams()
     const post = useSearch?.get("account") || ""
 
@@ -64,6 +65,7 @@ const Page = () => {
         const result = await ApiCreateItem({ position: currentUser.position, archive: "user" }, body)
         if (result.success) {
             toPage.push("/admin/user/#")
+            set_refresh(n => n + 1)
         }
     }
     return (
