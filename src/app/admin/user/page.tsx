@@ -61,10 +61,9 @@ const Page = () => {
         email: string;
         position: string;
     }) => {
-        console.log(body)
         const result = await ApiCreateItem({ position: currentUser.position, archive: "user" }, body)
         if (result.success) {
-            toPage.push("#")
+            toPage.push("/admin/user")
         }
     }
     return (
