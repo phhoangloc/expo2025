@@ -9,6 +9,7 @@ const post = async (
 ) => {
     // const query = req.query
     const method = req.method
+    const query = req.query
     const result: any = { success: false };
     const authorization = req.headers['authorization']
     const token = authorization && authorization.split(" ")[1]
@@ -51,7 +52,6 @@ const post = async (
                 break
             case "POST":
                 const body = req.body
-                console.log(body)
                 body.host = {
                     connect: { id: body.hostId }
                 }
@@ -65,6 +65,16 @@ const post = async (
                 result.success = true
                 result.message = "写真を投稿できました"
                 res.json(result)
+                break
+            case "DELETE":
+                const postToDelete = await prisma.post.findFirst({ where: { id: Number(query.id) }, include: { host: true } })
+                const user = await prisma.user.findFirst({ where: { id: id }, select: { position: true } })
+                if (user?.position === "admin" || id === postToDelete?.hostId) {
+                    await prisma.post.delete({ where: { id: Number(query.id) } })
+                    result.success = true
+                    result.message = "写真を削除できました"
+                    res.json(result)
+                }
                 break
         }
     } else {

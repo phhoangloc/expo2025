@@ -1,6 +1,6 @@
 'use client'
 import { Suspense } from "react"
-import { ApiCreateItem, ApiItemUser, ApiUploadFile } from "@/api/user"
+import { ApiCreateItem, ApiDeleteItem, ApiItemUser, ApiUploadFile } from "@/api/user"
 import { UserType } from "@/redux/reducer/UserReduce"
 import store from "@/redux/store"
 import LoginCard from "@/tool/card/loginCard"
@@ -17,7 +17,9 @@ import LockResetIcon from '@mui/icons-material/LockReset';
 import { IconDivider } from "@/tool/icon/icon"
 import { setRefresh } from "@/redux/reducer/RefreshReduce"
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 export type PostType = {
+  id: number
   archive: string,
   content: string,
   host: {
@@ -129,6 +131,12 @@ export default function Home() {
     getImage(currentUser.position, "post")
   }, [_refresh, currentUser.position])
 
+  const deletePost = async (id: number) => {
+    const result = await ApiDeleteItem({ position: currentUser.position, archive: "post", id })
+    if (result.success) {
+      set_refresh(n => n + 1)
+    }
+  }
   const toPage = useRouter()
   return (
     currentUser.id ?
@@ -151,9 +159,10 @@ export default function Home() {
                       <div className="w-full aspect-[3/2] relative border-b border-slate-200 ">
                         <Image src={process.env.ftp_url + post.image.name} fill alt="image" className="object-contain" />
                       </div>
-                      <div className="p-2">
+                      <div className="p-2 relative">
                         <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
                         <div>{post.host.username}</div>
+                        {currentUser.username === post.host.username || currentUser.position === "admin" ? <DeleteIcon className="absolute right-0 top-0 !w-12 !h-12 p-3 cursor-pointer hover:text-slate-500" onClick={() => deletePost(post.id)} /> : null}
                       </div>
                       <div className="h-6"></div>
                     </div>
