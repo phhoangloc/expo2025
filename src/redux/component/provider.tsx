@@ -45,7 +45,7 @@ const Provider = ({ children }: Props) => {
         loading ?
             <div className='w-full h-screen flex flex-col justify-center text-center'>
                 <div className='w-full max-w-sm text-left m-auto'>
-                    <div className='font-bold text-lg mb-2 '>大阪ウィーク～秋～</div>
+                    <div className='font-bold text-lg mb-2 '>EXPO 2025 大阪ウィーク～秋～</div>
                     <div className='font-bold text-xl'>「OSAKAから地域共生の未来をつくる」プロジェクト</div>
                     <div className="h-6"></div>
                     <div className=' text-2xl font-bold text-sky-700'>大阪府民生委員・児童委員の皆さんでつくる作品画像<br></br>投稿サイト</div>
